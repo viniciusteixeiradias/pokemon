@@ -1,0 +1,4 @@
+{
+    "python.terminal.activateEnvironment": true,
+    "python.defaultInterpreterPath": "PATH_TO_VENV_INTERPRETER",
+}
