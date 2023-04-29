@@ -23,6 +23,11 @@ class PokemonDAO():
             raise HTTPException(status_code=404, detail="Address not found")
         
         return pokemon
+    
+    def get_all(self):
+        pokemons = self.session.query(PokemonModel).all()
+
+        return pokemons
 
     def save(self, pokemonSchemaIn: PokemonSchemaIn) -> PokemonModel:
         try:
