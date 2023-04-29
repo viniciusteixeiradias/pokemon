@@ -4,7 +4,10 @@ from pydantic.types import UUID4
 
 class PokemonSchema(CamelModel):
     name: str
-    description: str
+    base_experience: int
+    height: int
+    weight: int
+    url_image: str
     
     class Config:
         orm_mode = True

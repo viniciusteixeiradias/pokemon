@@ -12,11 +12,16 @@ class PokemonModel(Base):
     id = Column(Integer, primary_key=True)
     uuid = Column(UUIDType, default=uuid.uuid4, nullable=False)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
+    base_experience = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    weight = Column(Integer, nullable=False)
+    url_image = Column(String, nullable=False)
     created = Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return (
-            f'PokemonModel(id={self.id}, name={self.name},'
-            f'description={self.description}, created={self.created})'
+            f'PokemonModel(id={self.id}, uuid={self.uuid}, '
+            f'name={self.name}, base_experience={self.base_experience}, '
+            f'height={self.height}, weight={self.weight}, ' 
+            f'url_image={self.url_image}, created={self.created})'
         )
