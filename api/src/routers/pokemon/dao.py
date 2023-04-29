@@ -13,47 +13,35 @@ class PokemonDAO():
 
     def count(self):
         return self.session.query(PokemonModel).count()
+    
+    def get_by_uuid(self, uuid: UUID4):
+        pokemon = self.session.query(PokemonModel) \
+            .filter(PokemonModel.uuid == uuid) \
+            .first()
 
-    # def save(self, pokemonSchemain: PokemonSchemaIn) -> PokemonModel:
-    #     try:
-    #         profile_dict = PokemonModel(**pokemonSchemain.dict())
+        if not pokemon:
+            raise HTTPException(status_code=404, detail="Address not found")
+        
+        return pokemon
 
-    #         self.session.add(profile_dict)
-    #         self.session.commit()
-    #         self.session.refresh(profile_dict)
+    def save(self, pokemonSchemaIn: PokemonSchemaIn) -> PokemonModel:
+        try:
+            profile_dict = PokemonModel(**pokemonSchemaIn.dict())
 
-    #         return profile_dict
-    #     except IntegrityError as e:
-    #         self.session.rollback()
-    #         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Pokemon not found: {e}")
+            self.session.add(profile_dict)
+            self.session.commit()
+            self.session.refresh(profile_dict)
 
-    # def update(
-    #     self,
-    #     uuid: UUID4,
-    #     profile_in: ProfileModelIn
-    # ) -> Profile:
+            return profile_dict
+        except IntegrityError as e:
+            self.session.rollback()
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Pokemon not found: {e}")
 
-    #     profile_dict = profile_in.dict()
+    def delete(self, uuid: UUID4) -> None:
 
-    #     profile_db = self.session.query(Profile).filter(
-    #         Profile.uuid == uuid).first()
-
-    #     if not profile_db:
-    #         raise HTTPException(
-    #             status_code=404, detail="Profile not found")
-
-    #     for key, value in profile_dict.items():
-    #         setattr(profile_db, key, value)
-
-    #     self.session.add(profile_db)
-    #     self.session.commit()
-    #     self.session.refresh(profile_db)
-
-    #     return profile_db
-
-    # def delete(self, uuid: UUID4) -> None:
-
-    #     obj = self.session.query(Profile).filter(
-    #         Profile.uuid == uuid).first()
-    #     self.session.delete(obj)
-    #     self.session.commit()
+        pokemon = self.session.query(PokemonModel) \
+            .filter(PokemonModel.uuid == uuid) \
+            .first()
+        
+        self.session.delete(pokemon)
+        self.session.commit()
