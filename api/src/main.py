@@ -1,11 +1,12 @@
 import requests
+
 from starlette.responses import Response
 from pydantic.types import UUID4
 
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers.pokemon import PokemonDAO, PokemonSchema, PokemonSchemaOut
+from .routers.pokemon import PokemonDAO, PokemonSchema, PokemonSchemaIn, PokemonSchemaOut
 
 app = FastAPI()
 
@@ -20,33 +21,70 @@ app.add_middleware(
 )
 
 @app.get("/")
-def read_root():
+def hello_world():
     return {"Hello": "World"}
 
-# @app.get("/vinicius")
-# def req():
-#     response = requests.get("https://pokeapi.co/api/v2/berry/3/")
-#     return response.json()
+@app.get("/pokemon")
+def all(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    return pokemonDAO.get_all()
 
-@app.get('/count')
-def profiles(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+@app.get('/pokemon/count')
+def count(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
     return pokemonDAO.count()
 
-@app.get('/create')
-def profiles(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
-    return pokemonDAO.save(pokemonSchemaIn = PokemonSchema(name='picachu', description='Essa é a descrição'))
+@app.get('/pokemon/create')
+def create(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    pokemon = PokemonSchemaIn(
+        name='name_example', 
+        base_experience=100, 
+        height=10, 
+        weight=10, 
+        url_image='url_image_example'
+    )
 
-@app.get('/{uuid}', response_model=PokemonSchemaOut)
-def get_address(
+    return pokemonDAO.save(pokemonSchemaIn=pokemon)
+
+@app.get('/pokemon/{uuid}', response_model=PokemonSchemaOut)
+def get_by_uuid(
     uuid: UUID4,
     pokemonDAO: PokemonDAO = Depends(PokemonDAO)
 ):
     return pokemonDAO.get_by_uuid(uuid=uuid) 
 
-@app.delete('/{uuid}', status_code=204, response_class=Response)
+@app.delete('/pokemon/{uuid}', status_code=204, response_class=Response)
 def delete(
     uuid: UUID4,
     pokemonDAO: PokemonDAO = Depends(PokemonDAO)
 ):
     return pokemonDAO.delete(uuid=uuid)
 
+
+@app.get("/populate_table")
+def populate_table(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    num_pokemons = 5
+    pokemon_id = 1
+    pokemons = all(pokemonDAO=pokemonDAO)
+
+    while len(pokemons) <= num_pokemons:
+        response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_id}")
+        json_data = response.json()
+
+        pokemon_id += 1
+
+        if not json_data:
+            continue
+
+        name = json_data['name']
+        height = json_data['height']
+        weight = json_data['weight']
+        base_experience = json_data['base_experience']
+        url_image = json_data['sprites']['other']['official-artwork']['front_default']
+
+        pokemon = PokemonSchemaIn(name=name, base_experience=base_experience, height=height, weight=weight, url_image=url_image)
+        pokemons.append(pokemon)
+
+        pokemonDAO.save(pokemonSchemaIn=pokemon)
+    
+    return pokemons
+
+        
