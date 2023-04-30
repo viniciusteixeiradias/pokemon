@@ -30,11 +30,9 @@ const request = async <T>(endpoint: string): Promise<T | undefined> => {
 
         return data
     } catch (error: any) {
-        console.log(error)
         if (error instanceof AxiosError) {
             alert(error.response?.data.detail)
         }
-
     } finally {
         loading.value = false;
     }
