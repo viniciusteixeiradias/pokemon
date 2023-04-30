@@ -1,5 +1,5 @@
 from src.utils.camel_model import CamelModel
-
+from pydantic.types import UUID4
 class PokemonSchema(CamelModel):
     name: str
     base_experience: int
@@ -16,4 +16,4 @@ class PokemonSchemaIn(PokemonSchema):
 
 
 class PokemonSchemaOut(PokemonSchema):
-    name: str
+    uuid: UUID4
