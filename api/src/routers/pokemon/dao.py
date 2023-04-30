@@ -34,8 +34,6 @@ class PokemonDAO():
             profile_dict = PokemonModel(**pokemonSchemaIn.dict())
 
             self.session.add(profile_dict)
-            self.session.commit()
-            self.session.refresh(profile_dict)
 
             return profile_dict
         except IntegrityError as e:
@@ -49,4 +47,3 @@ class PokemonDAO():
             .first()
         
         self.session.delete(pokemon)
-        self.session.commit()

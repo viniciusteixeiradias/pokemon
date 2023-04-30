@@ -37,9 +37,11 @@ def create(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
 
     return pokemonDAO.save(pokemonSchemaIn=pokemon)
 
+
 @app.get('/pokemon/count')
 def count(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
     return pokemonDAO.count()
+
 
 @app.get('/pokemon/random', response_model=PokemonSchemaOut)
 def get_random(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
