@@ -14,13 +14,13 @@ class PokemonDAO():
     def count(self):
         return self.session.query(PokemonModel).count()
     
-    def get_by_uuid(self, uuid: UUID4):
+    def get_by_name(self, name: str):
         pokemon = self.session.query(PokemonModel) \
-            .filter(PokemonModel.uuid == uuid) \
+            .filter(PokemonModel.name == name) \
             .first()
 
         if not pokemon:
-            raise HTTPException(status_code=404, detail="Address not found")
+            raise HTTPException(status_code=404, detail="Pokemon not found")
         
         return pokemon
     

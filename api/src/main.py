@@ -6,7 +6,11 @@ from pydantic.types import UUID4
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers.pokemon import PokemonDAO, PokemonSchema, PokemonSchemaIn, PokemonSchemaOut
+from .routers.pokemon import PokemonDAO, PokemonSchemaIn, PokemonSchemaOut
+
+import random
+
+from typing import List
 
 app = FastAPI()
 
@@ -20,18 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def hello_world():
-    return {"Hello": "World"}
-
-@app.get("/pokemon")
-def all(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
-    return pokemonDAO.get_all()
-
-@app.get('/pokemon/count')
-def count(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
-    return pokemonDAO.count()
-
+# Pokemon routes (Put this on routes/pokemon/endpoints) in the future, now not is necessary.
 @app.get('/pokemon/create')
 def create(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
     pokemon = PokemonSchemaIn(
@@ -44,12 +37,29 @@ def create(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
 
     return pokemonDAO.save(pokemonSchemaIn=pokemon)
 
-@app.get('/pokemon/{uuid}', response_model=PokemonSchemaOut)
-def get_by_uuid(
-    uuid: UUID4,
+@app.get('/pokemon/count')
+def count(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    return pokemonDAO.count()
+
+@app.get('/pokemon/random', response_model=PokemonSchemaOut)
+def get_random(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    pokemons = get_all(pokemonDAO=pokemonDAO) 
+    
+    return random.choice(pokemons)
+
+
+@app.get("/pokemon", response_model=List[PokemonSchemaOut])
+def get_all(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
+    return pokemonDAO.get_all()
+
+
+@app.get('/pokemon/{name}', response_model=PokemonSchemaOut)
+def get_by_name(
+    name: str,
     pokemonDAO: PokemonDAO = Depends(PokemonDAO)
 ):
-    return pokemonDAO.get_by_uuid(uuid=uuid) 
+    return pokemonDAO.get_by_name(name=name) 
+
 
 @app.delete('/pokemon/{uuid}', status_code=204, response_class=Response)
 def delete(
@@ -58,12 +68,11 @@ def delete(
 ):
     return pokemonDAO.delete(uuid=uuid)
 
-
 @app.get("/populate_table")
 def populate_table(pokemonDAO: PokemonDAO = Depends(PokemonDAO)):
-    num_pokemons = 5
+    num_pokemons = 20
     pokemon_id = 1
-    pokemons = all(pokemonDAO=pokemonDAO)
+    pokemons = get_all(pokemonDAO=pokemonDAO)
 
     while len(pokemons) <= num_pokemons:
         response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_id}")
