@@ -16,4 +16,3 @@ services:
       - .:/frontend
     depends_on:
       - api
-    
