@@ -15,7 +15,7 @@ This API was developed in order to improve my knowledge in python and also to un
 ## Summary of some of the tools used
 
 - **Fastapi** is a fast (high-performance) framework for creating APIs with Python 3.7+
-<br>
+
 - **Uvicorn** is an **ASGI** web server implementation for Python.
   - **ASGI** ([Asynchronous Server Gateway Interface](https://asgi.readthedocs.io/en/latest/introduction.html)) is a specification for asynchronous web interfaces in Python to "handle multiple requests concurrently and more efficiently".
 
@@ -23,10 +23,10 @@ This API was developed in order to improve my knowledge in python and also to un
 
   - **Difference between ASGI and WSGI**
     The main difference between ASGI and WSGI is that ASGI is capable of handling asynchronous requests whereas WSGI is limited to handling synchronous requests only. This means that ASGI is more efficient for handling web applications that require multiple tasks to run at the same time, such as real-time chat applications or streaming media, websocket, while WSGI is better suited for more traditional web applications that handle individual requests synchronously.
-<br>
+
 - **SQLAlchemy** is the Python SQL toolkit and **Object Relational Mapper** that gives application developers the full power and flexibility of SQL.
   - **ORM** (Object Relational Mapper) is a piece of software designed to translate between the data representations used by databases and those used in object-oriented programming.
-<br>
+
 - **Alembic** is a lightweight database migration tool for usage with the SQLAlchemy Database Toolkit for Python.
 
 ## Setps to run the app
