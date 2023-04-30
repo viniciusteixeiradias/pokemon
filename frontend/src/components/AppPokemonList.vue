@@ -17,11 +17,12 @@ const state = reactive<State>({
 const searchText = ref<string>('')
 const loading = ref<boolean>(false)
 
-const API_URL = 'http://127.0.0.1:8000/pokemon';
-
 const hasPokemon = computed<boolean>(() => !!state.pokemons.length)
 
-const request = async <T>(endpoint: string = API_URL): Promise<T | undefined> => {
+const API_URL = import.meta.env.VITE_API_URL;
+const API_URL_POKEMON = `${API_URL}/pokemon`;
+
+const request = async <T>(endpoint: string): Promise<T | undefined> => {
     try {
         loading.value = true;
 
@@ -29,18 +30,16 @@ const request = async <T>(endpoint: string = API_URL): Promise<T | undefined> =>
 
         return data
     } catch (error: any) {
-
         if (error instanceof AxiosError) {
             alert(error.response?.data.detail)
         }
-
     } finally {
         loading.value = false;
     }
 }
 
 const loadAllPokemons = async (): Promise<void> => {
-    const data = await request<Pokemon[]>();
+    const data = await request<Pokemon[]>(API_URL_POKEMON);
 
     if (!data) {
         return;
@@ -50,7 +49,7 @@ const loadAllPokemons = async (): Promise<void> => {
 }
 
 const onPopulateTable = async (): Promise<void> => {
-    await request<void>('http://127.0.0.1:8000/populate_table');
+    await request<void>(`${API_URL}/populate_table`);
     await loadAllPokemons()
 }
 
@@ -60,7 +59,7 @@ const cleanrListAndAddPokemon = (pokemon: Pokemon): void => {
 }
 
 const loadRandom = async (): Promise<void> => {
-    const data = await request<Pokemon>(`${API_URL}/random`);
+    const data = await request<Pokemon>(`${API_URL_POKEMON}/random`);
 
     if (!data) {
         return;
@@ -70,7 +69,7 @@ const loadRandom = async (): Promise<void> => {
 }
 
 const loadByName = async (): Promise<void> => {
-    const data = await request<Pokemon>(`${API_URL}/${searchText.value}`)
+    const data = await request<Pokemon>(`${API_URL_POKEMON}/${searchText.value}`)
 
     if (!data) {
         return;
