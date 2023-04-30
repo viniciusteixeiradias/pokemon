@@ -58,8 +58,20 @@ This API was developed in order to improve my knowledge in python and also to un
     pipenv install
     ```
 
+    Create database and Run migrations:
+
+    ```bash
+      alembic upgrade heads
+    ```
+
     Run API:
 
     ```bash
     uvicorn src.main:app
     ```
+
+## Create a migration using alembic
+
+```bash
+alembic revision --autogenerate -m "your description here"
+```
