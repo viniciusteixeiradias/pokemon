@@ -1,2 +1,2 @@
-from src.database.models import Base
-from src.routers.pokemon import model
+from app.database.models import Base
+from app.routers.pokemon import model

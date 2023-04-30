@@ -67,7 +67,7 @@ This API was developed in order to improve my knowledge in python and also to un
     Run API:
 
     ```bash
-    uvicorn src.main:app
+    uvicorn app.main:app
     ```
 
 ## Create a migration using alembic

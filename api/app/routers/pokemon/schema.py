@@ -1,4 +1,4 @@
-from src.utils.camel_model import CamelModel
+from app.utils.camel_model import CamelModel
 from pydantic.types import UUID4
 class PokemonSchema(CamelModel):
     name: str

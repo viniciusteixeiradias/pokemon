@@ -2,7 +2,7 @@ import uuid
 
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
-from src.database.models import Base
+from app.database.models import Base
 from sqlalchemy_utils import UUIDType
 
 
